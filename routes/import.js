@@ -9,7 +9,7 @@ router.use(validator);
 
 router.post('/', async (req, res) => {
   try {
-    const { movie: { id = '' } } = req.body;
+    const { series: { id = '' } } = req.body;
     const resolutions = splitUrlParam(req, 'resolutions');
     const profile = getUrlParam(req, 'profile');
     const response = await sync({ id, resolutions, profile });

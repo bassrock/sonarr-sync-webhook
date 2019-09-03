@@ -1,17 +1,17 @@
-# Radarr Sync Webhook
+# Sonarr Sync Webhook
 
-Radarr Sync Webhook adds downloaded movies from a Radarr instance to another Radarr instance automatically.
+Sonarr Sync Webhook adds downloaded tv seriess from a Sonarr instance to another Sonarr instance automatically.
 
 ## Requirements
 
-- Two Radarr instances
+- Two Sonarr instances
 - Node.js / Docker
 
 ## Usage
 
 ### Webhook Setup
 
-On your main Radarr instance, create a new webhook:
+On your main Sonarr instance, create a new webhook:
 
 1. Run "On Download" and "On Upgrade"
 1. URL should point to `/import` and specify the following query parameters:
@@ -27,13 +27,13 @@ In addition to the `/import` webhook, you can also trigger syncs manually. The m
 
 #### `/import/:id`
 
-Imports movie `id`. You can get a list of movie ids using the [API](https://github.com/Radarr/Radarr/wiki/API:Movie#get).
+Imports tv series `id`. You can get a list of tv series ids using the [API](https://github.com/Sonarr/Sonarr/wiki/API:Series#get).
 
 Example: `curl -XPOST http://localhost:3000/import/1?resolutions=r2160P&profile=1`
 
 #### `/import/all` 
 
-Imports all movies.
+Imports all tv seriess.
 
 Example: `curl -XPOST http://localhost:3000/import/all?resolutions=r2160P&profile=1`
 
@@ -48,16 +48,16 @@ Install node modules: `npm install`
 Create Docker image:
 ```
 docker create \
---name=radarr-sync \
+--name=sonarr-sync \
 -p 3000:3000 \
 -e SRC_APIKEY=apikey \
 -e DST_APIKEY=apikey \
--e SRC_ROOT="/my/UHD/Movies" \
--e DST_ROOT="/my/HD/Movies" \
+-e SRC_ROOT="/my/UHD/TV" \
+-e DST_ROOT="/my/HD/TV" \
 -e SRC_HOST=http://localhost:7878 \
 -e DST_HOST=http://localhost:9090 \
 --restart unless-stopped \
-radarr-sync:latest
+sonarr-sync:latest
 ```
 
 ## Running
@@ -68,8 +68,8 @@ radarr-sync:latest
 PORT=3000 \
 SRC_APIKEY=apikey \
 DST_APIKEY=apikey \
-SRC_ROOT="/my/UHD/Movies" \
-DST_ROOT="/my/HD/Movies" \
+SRC_ROOT="/my/UHD/TV" \
+DST_ROOT="/my/HD/TV" \
 SRC_HOST=http://localhost:7878 \
 DST_HOST=http://localhost:9090 \
 npm start
@@ -78,5 +78,5 @@ npm start
 ### Docker
 
 ```
-docker start radarr-sync
+docker start sonarr-sync
 ```

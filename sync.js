@@ -18,12 +18,12 @@ const log = (message, title) => {
   return msg;
 };
 
-const addMovie = (json, resolutions, profile) => {
-  if (!json.downloaded) {
+const addSeries = (json, resolutions, profile) => {
+  if (!json.episodeFileCount === 0) {
     return log('Not downloaded. Skipping.', json.title);
   }
   const {
-    title, titleSlug, tmdbId, year, movieFile: { quality: { quality: { resolution = '' } } },
+    title, titleSlug, tvdbId, year,
   } = json;
   const path = json.path.replace(src.root, dst.root);
   const qualityProfileId = parseInt(profile, 10);
@@ -33,32 +33,31 @@ const addMovie = (json, resolutions, profile) => {
   const payload = {
     title,
     titleSlug,
-    tmdbId,
-    year,
+    tvdbId,
     path,
     qualityProfileId,
+    seasons: [],
     images: [],
+    year,
     addOptions: {
-      searchForMovie: true,
+      searchForMissingEpisodes: true,
     },
   };
-  if (!resolutions.includes(resolution)) {
-    return log(`Resolution '${resolution}' is not a synced resolution: ${resolutions}`, title);
-  }
-  return axios.post(`${dst.host}/api/movie?apikey=${dst.apikey}`, payload)
+
+  return axios.post(`${dst.host}/api/series?apikey=${dst.apikey}`, payload)
     .then(() => log('Synced!', title))
-    .catch(() => log('Unable to add movie', title));
+    .catch(() => log('Unable to add series', title));
 };
 
-const sync = ({ id, resolutions, profile }) => axios.get(`${src.host}/api/movie/${id}?apikey=${src.apikey}`)
+const sync = ({ id, resolutions, profile }) => axios.get(`${src.host}/api/series/${id}?apikey=${src.apikey}`)
   .then((data) => {
     if (data.message === 'Not Found') {
-      return log(`Movie id not found: ${id}`);
+      return log(`Series id not found: ${id}`);
     }
-    return addMovie(data.data, resolutions, profile);
+    return addSeries(data.data, resolutions, profile);
   });
 
-const importAll = ({ resolutions, profile }) => axios.get(`${src.host}/api/movie?apikey=${src.apikey}`)
-  .then(data => data.data.map(d => addMovie(d, resolutions, profile)).filter(movie => movie));
+const importAll = ({ resolutions, profile }) => axios.get(`${src.host}/api/series?apikey=${src.apikey}`)
+  .then(data => data.data.map(d => addSeries(d, resolutions, profile)).filter(series => series));
 
 module.exports = { sync, importAll };

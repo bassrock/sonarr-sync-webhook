@@ -23,7 +23,7 @@ const addSeries = (json, resolutions, profile) => {
     return log('Not downloaded. Skipping.', json.title);
   }
   const {
-    title, titleSlug, tvdbId, year,
+    title, titleSlug, tvdbId,
   } = json;
   const path = json.path.replace(src.root, dst.root);
   const qualityProfileId = parseInt(profile, 10);
@@ -38,7 +38,6 @@ const addSeries = (json, resolutions, profile) => {
     qualityProfileId,
     seasons: [],
     images: [],
-    year,
     addOptions: {
       searchForMissingEpisodes: true,
     },
